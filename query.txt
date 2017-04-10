@@ -7,8 +7,14 @@ SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS
 3. CREATE
 INSERT INTO customer VALUES ('no_hp','nama');
 INSERT INTO pesanan (deskripsi) VALUES ('deskripsi');
-INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('no_hp', (SELECT CURDATE()));
+INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('no_hp', (SELECT DATE_ADD(CURDATE(), INTERVAL 2 WEEK)));
 
 4. EDIT
+UPDATE customer SET no_hp='no_hp_baru', nama='nama_baru' WHERE no_hp='no_hp_lama';
+UPDATE custpesanan SET no_hp='no_hp_baru'WHERE no_hp='no_hp_lama', 
+UPDATE pesanan 
 
 5. DELETE
+DELETE FROM customer WHERE no_hp='no_hp';
+DELETE FROM 
+DELETE FROM pesanan WHERE id = (SELECT id FROM custpesanan WHERE no_hp='no_hp');
