@@ -10,6 +10,14 @@
 	<body>
 	<?php 
 
+		//search
+		$keyword = "";
+
+		//check if search exist
+		if(isset($_GET['searchKey'])) {
+    		$keyword = $_GET["searchKey"];
+		}
+
 		$servername = "localhost";
 		$username = "root";
 		//$password = "password";
@@ -20,9 +28,20 @@
 	  		or die("Unable to connect to MySQL");
 		//echo "Connected to MySQL<br>";
 
+		/*
+		//create
 		$query = "SELECT customer.no_hp, nama, deskripsi, tanggal_terakhir FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;";
 
+		//creat
 		$data = mysqli_query($dbhandle, $query);
+		*/
+
+		$query = "SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%" . $keyword. "%' OR nama LIKE '%" . $keyword . "%' OR deskripsi LIKE '%" . $keyword . "%';";
+
+		$data = mysqli_query($dbhandle, $query);
+
+		//inisialisasi
+		$i = 1;
 
 	?>
 		<div id="bodii2">
@@ -32,7 +51,7 @@
 				</div>
 
 				<div id="pencarian">
-					<form action="/action.php" method="get" class="col-md-10 col-md-offset-1 input-group">
+					<form action="homePage.php" method="get" class="col-md-10 col-md-offset-1 input-group">
 			  			<input type="text" name="searchKey" placeholder="Nama" class="form-control">
 							<div class="input-group-btn">
 	      				<button class="btn btn-default" type="submit">
@@ -46,6 +65,7 @@
 				<div id="tabel">
 					<table class="col-md-10 col-md-offset-1 table-hover table-responsive">
 					  <tr class="bg-primary">
+					  	<th class="col-md-1 text-center">No</th>
 					    <th class="col-md-1 text-center">No HP</th>
 					    <th class="col-md-1 text-center">Nama</th>
 					    <th class="col-md-3 text-center">Pesanan</th>
@@ -53,18 +73,22 @@
 					  </tr>
 					  <?php
 					  	while ($record = $data->fetch_assoc()) :
-					  		$no_hp = $record["no_hp"];
+					  		$no_hp = $record["hp"];
 							$nama = $record["nama"];
 							$deskripsi = $record["deskripsi"];
-							$tanggal = $record["tanggal_terakhir"];
+							$tanggal = $record["tanggal"];
 					  ?>
 					  <tr>
+					  	<td class="col-md-1 text-center"><?php echo $i; ?></td>
 					    <td class="col-md-1 text-center"><?php echo $no_hp; ?></td>
 					    <td class="col-md-1 text-center"><?php echo $nama; ?></td>
 					    <td class="col-md-3"><?php echo $deskripsi; ?></td>
 					    <td class="col-md-1 text-center"><?php echo $tanggal; ?></td>
 					  </tr>
-					  <?php endwhile; ?>
+					  <?php
+					  	$i++;
+					  	endwhile;
+					  ?>
 					</table>
 				</div>
 
