@@ -35,7 +35,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES ('081234567890','Andi'),('081281217726','Jovian');
+INSERT INTO `customer` VALUES ('081234567890','Andi'),('081281217726','Jovian'),('081321098765','Budi');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -48,13 +48,13 @@ DROP TABLE IF EXISTS `custpesanan`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `custpesanan` (
   `no_hp` varchar(14) DEFAULT NULL,
-  `id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tanggal_terakhir` date DEFAULT NULL,
   KEY `no_hp` (`no_hp`),
   KEY `id` (`id`),
   CONSTRAINT `custpesanan_ibfk_1` FOREIGN KEY (`no_hp`) REFERENCES `customer` (`no_hp`),
   CONSTRAINT `custpesanan_ibfk_2` FOREIGN KEY (`id`) REFERENCES `pesanan` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `custpesanan` (
 
 LOCK TABLES `custpesanan` WRITE;
 /*!40000 ALTER TABLE `custpesanan` DISABLE KEYS */;
-INSERT INTO `custpesanan` VALUES ('081281217726',1,'2017-04-26'),('081234567890',2,'2017-04-27');
+INSERT INTO `custpesanan` VALUES ('081281217726',1,'2017-04-26'),('081234567890',2,'2017-04-27'),('081321098765',3,'2017-04-27');
 /*!40000 ALTER TABLE `custpesanan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -78,7 +78,7 @@ CREATE TABLE `pesanan` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `deskripsi` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -87,7 +87,7 @@ CREATE TABLE `pesanan` (
 
 LOCK TABLES `pesanan` WRITE;
 /*!40000 ALTER TABLE `pesanan` DISABLE KEYS */;
-INSERT INTO `pesanan` VALUES (1,'Cetak Spanduk 5 x 5 meter'),(2,'Cetak XBanner 5 buah');
+INSERT INTO `pesanan` VALUES (1,'Cetak Spanduk 5 x 5 meter'),(2,'Cetak XBanner 5 buah'),(3,'produksi mug 1000 buah');
 /*!40000 ALTER TABLE `pesanan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -100,4 +100,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-04 17:54:17
+-- Dump completed on 2017-04-10 13:54:14

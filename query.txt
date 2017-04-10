@@ -1,0 +1,14 @@
+1. retrieve all data
+SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;
+
+2. retrieve data search
+SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%keyword%' OR nama LIKE '%keyword%' OR deskripsi LIKE '%keyword%';
+
+3. CREATE
+INSERT INTO customer VALUES ('no_hp','nama');
+INSERT INTO pesanan (deskripsi) VALUES ('deskripsi');
+INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('no_hp', (SELECT CURDATE()));
+
+4. EDIT
+
+5. DELETE

@@ -8,6 +8,56 @@
 		<title>Aplikasi Pengingat Pengambilan Produk</title>
 	</head>
 	<body>
+	<?php
+
+		//search
+		$keyword = "";
+
+		//check if search exist
+		if(isset($_GET['searchKey'])) {
+    		$keyword = $_GET["searchKey"];
+		}
+
+		$servername = "localhost";
+		$username = "root";
+		//$password = "password";
+		$dbname = "tirtaanugrah";
+
+		//connection to the database
+		$dbhandle = mysqli_connect($servername, $username, NULL, $dbname)
+	  		or die("Unable to connect to MySQL");
+		//echo "Connected to MySQL<br>";
+
+
+		//create
+
+		//check if the page after create
+		if(isset($_GET['noHP'])) {
+    		//execute create
+    		$query = "INSERT INTO customer VALUES ('" . $_GET['noHP'] . "','" . $_GET['nama'] . "');";
+    		mysqli_query($dbhandle, $query);
+
+    		$query = "INSERT INTO pesanan (deskripsi) VALUES ('" . $_GET['pesanan'] . "');";
+    		mysqli_query($dbhandle, $query);
+
+    		$query = "INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('" . $_GET['noHP'] . "', (SELECT DATE_ADD(CURDATE(), INTERVAL 2 WEEK)));";
+    		mysqli_query($dbhandle, $query);
+
+		}
+		$query = "SELECT customer.no_hp, nama, deskripsi, tanggal_terakhir FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;";
+
+		//creat
+		$data = mysqli_query($dbhandle, $query);
+
+
+		$query = "SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%" . $keyword. "%' OR nama LIKE '%" . $keyword . "%' OR deskripsi LIKE '%" . $keyword . "%';";
+
+		$data = mysqli_query($dbhandle, $query);
+
+		//inisialisasi
+		$i = 1;
+
+	?>
 		<div id="bodii2">
 			<div id="bodii">
 				<div id="judul">
@@ -15,7 +65,7 @@
 				</div>
 
 				<div id="pencarian">
-					<form action="/action.php" method="get" class="col-md-10 col-md-offset-1 input-group">
+					<form action="homePage.php" method="get" class="col-md-10 col-md-offset-1 input-group">
 			  			<input type="text" name="searchKey" placeholder="Nama" class="form-control">
 							<div class="input-group-btn">
 	      				<button class="btn btn-default" type="submit">
@@ -29,47 +79,30 @@
 				<div id="tabel">
 					<table class="col-md-10 col-md-offset-1 table-hover table-responsive">
 					  <tr class="bg-primary">
+					  	<th class="col-md-1 text-center">No</th>
 					    <th class="col-md-1 text-center">No HP</th>
 					    <th class="col-md-1 text-center">Nama</th>
 					    <th class="col-md-3 text-center">Pesanan</th>
 					    <th class="col-md-1 text-center">Tanggal Terakhir</th>
 					  </tr>
+					  <?php
+					  	while ($record = $data->fetch_assoc()) :
+					  		$no_hp = $record["hp"];
+							$nama = $record["nama"];
+							$deskripsi = $record["deskripsi"];
+							$tanggal = $record["tanggal"];
+					  ?>
 					  <tr>
-					    <td class="col-md-1 text-center">081281217726</td>
-					    <td class="col-md-1 text-center">Jovian</td>
-					    <td class="col-md-3">Cetak Spanduk 5 x 5 meter warna merah untuk event Wisuda HMIF</td>
-					    <td class="col-md-1 text-center">26/4/2017</td>
+					  	<td class="col-md-1 text-center"><?php echo $i; ?></td>
+					    <td class="col-md-1 text-center"><?php echo $no_hp; ?></td>
+					    <td class="col-md-1 text-center"><?php echo $nama; ?></td>
+					    <td class="col-md-3"><?php echo $deskripsi; ?></td>
+					    <td class="col-md-1 text-center"><?php echo $tanggal; ?></td>
 					  </tr>
-					  <tr>
-					    <td class="col-md-1 text-center">083444555666</td>
-					    <td class="col-md-1 text-center">Rudy</td>
-					    <td class="col-md-3">Cetak Mug 500 item warna putih wisudaan HMIF</td>
-					    <td class="col-md-1 text-center">27/4/2017</td>
-					  </tr>
-					  <tr>
-					    <td class="col-md-1 text-center">089999999999</td>
-					    <td class="col-md-1 text-center">Susi</td>
-					    <td class="col-md-3">Cetak poster Kesenian Budaya Sunda 400 lembar</td>
-					    <td class="col-md-1 text-center">28/4/2017</td>
-					  </tr>
-					  <tr>
-					    <td class="col-md-1 text-center">085777777777</td>
-					    <td class="col-md-1 text-center">Fian</td>
-					    <td class="col-md-3">Cetak baliho 2x6 meter 5 item</td>
-					    <td class="col-md-1 text-center">29/4/2017</td>
-					  </tr>
-					  <tr>
-					    <td class="col-md-1 text-center">083555444111</td>
-					    <td class="col-md-1 text-center">Ari</td>
-					    <td class="col-md-3">Cetak Diktat Matematika 30 eksemplar @100 lembar</td>
-					    <td class="col-md-1 text-center">30/4/2017</td>
-					  </tr>
-					  <tr>
-					    <td class="col-md-1 text-center">083999000111</td>
-					    <td class="col-md-1 text-center">Chris</td>
-					    <td class="col-md-3">Cetak Poster Seminar Pendidikan 300 lembar</td>
-					    <td class="col-md-1 text-center">1/5/2017</td>
-					  </tr>
+					  <?php
+					  	$i++;
+					  	endwhile;
+					  ?>
 					</table>
 				</div>
 
