@@ -28,13 +28,27 @@
 	  		or die("Unable to connect to MySQL");
 		//echo "Connected to MySQL<br>";
 
-		/*
+		
 		//create
+
+		//check if the page after create
+		if(isset($_GET['noHP'])) {
+    		//execute create
+    		$query = "INSERT INTO customer VALUES ('" . $_GET['noHP'] . "','" . $_GET['nama'] . "');";
+    		mysqli_query($dbhandle, $query);
+
+    		$query = "INSERT INTO pesanan (deskripsi) VALUES ('" . $_GET['pesanan'] . "');";
+    		mysqli_query($dbhandle, $query);
+
+    		$query = "INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('" . $_GET['noHP'] . "', (SELECT DATE_ADD(CURDATE(), INTERVAL 2 WEEK)));";
+    		mysqli_query($dbhandle, $query);
+
+		}
 		$query = "SELECT customer.no_hp, nama, deskripsi, tanggal_terakhir FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;";
 
 		//creat
 		$data = mysqli_query($dbhandle, $query);
-		*/
+		
 
 		$query = "SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%" . $keyword. "%' OR nama LIKE '%" . $keyword . "%' OR deskripsi LIKE '%" . $keyword . "%';";
 
@@ -129,7 +143,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Create New</h4>
 				</div>
-				<form action="/homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>

@@ -7,7 +7,7 @@ SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS
 3. CREATE
 INSERT INTO customer VALUES ('no_hp','nama');
 INSERT INTO pesanan (deskripsi) VALUES ('deskripsi');
-INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('no_hp', 'tanggal');
+INSERT INTO custpesanan (no_hp, tanggal_terakhir) VALUES ('no_hp', (SELECT CURDATE()));
 
 4. EDIT
 
