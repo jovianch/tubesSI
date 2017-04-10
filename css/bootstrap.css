@@ -6,6 +6,15 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 /* bikinan sendiri */
 
+#login-button{
+  margin-left: 150px;
+}
+
+#login-panel{
+  width: 400px;
+  margin-left: 200px;
+  margin-right: 200px;
+}
 
 #bodii {
   margin-left: 20%;
