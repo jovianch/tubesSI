@@ -8,6 +8,23 @@
 		<title>Aplikasi Pengingat Pengambilan Produk</title>
 	</head>
 	<body>
+	<?php 
+
+		$servername = "localhost";
+		$username = "root";
+		//$password = "password";
+		$dbname = "tirtaanugrah";
+
+		//connection to the database
+		$dbhandle = mysqli_connect($servername, $username, NULL, $dbname) 
+	  		or die("Unable to connect to MySQL");
+		//echo "Connected to MySQL<br>";
+
+		$query = "SELECT customer.no_hp, nama, deskripsi, tanggal_terakhir FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;";
+
+		$data = mysqli_query($dbhandle, $query);
+
+	?>
 		<div id="bodii2">
 			<div id="bodii">
 				<div id="judul">
@@ -34,12 +51,20 @@
 					    <th class="col-md-3 text-center">Pesanan</th>
 					    <th class="col-md-1 text-center">Tanggal Terakhir</th>
 					  </tr>
+					  <?php
+					  	while ($record = $data->fetch_assoc()) :
+					  		$no_hp = $record["no_hp"];
+							$nama = $record["nama"];
+							$deskripsi = $record["deskripsi"];
+							$tanggal = $record["tanggal_terakhir"];
+					  ?>
 					  <tr>
-					    <td class="col-md-1 text-center">081281217726</td>
-					    <td class="col-md-1 text-center">Jovian</td>
-					    <td class="col-md-3">Cetak Spanduk 5 x 5 meter tapi bayarnya ngutang ke pak Idik soalnya dia gabawa dompet gitu trus duitnya jg udah abis buat bayar parkir mobil yang mahal</td>
-					    <td class="col-md-1 text-center">26/4/2017</td>
+					    <td class="col-md-1 text-center"><?php echo $no_hp; ?></td>
+					    <td class="col-md-1 text-center"><?php echo $nama; ?></td>
+					    <td class="col-md-3"><?php echo $deskripsi; ?></td>
+					    <td class="col-md-1 text-center"><?php echo $tanggal; ?></td>
 					  </tr>
+					  <?php endwhile; ?>
 					</table>
 				</div>
 
