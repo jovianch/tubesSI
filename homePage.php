@@ -44,6 +44,13 @@
     		mysqli_query($dbhandle, $query);
 
 		}
+
+		//check if the page after set time
+		if(isset($_GET['jam'])) {
+			$query = "UPDATE time SET jam=" . $_GET['jam'] . ", menit=" . $_GET['menit'] . ", detik=" . $_GET['detik'] . ";";
+			mysqli_query($dbhandle, $query);
+		}
+
 		$query = "SELECT customer.no_hp, nama, deskripsi, tanggal_terakhir FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;";
 
 		//creat
@@ -109,7 +116,18 @@
 
 				<div id="tombol" class="col-md-10 col-md-offset-1">
 					<form action="homePage.php" name="CRUD" action="" method="get">
-						<h3>Edit / Delete no :</h3><input type="text" name="nomor" placeholder="No" class="form-control"><br><br>
+						<h3>Edit / Delete no :</h3>
+						<select>
+							<?php
+								$j = 1;
+								while ($j<$i) :
+									echo "<option value=" . $j . ">" . $j . "</option>";
+									$j++;
+								endwhile;
+							?>
+						</select>
+
+						<br><br>
 
 						<button id="btnCreate" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreate">
 							<i class="glyphicon glyphicon-plus"></i>
@@ -149,16 +167,16 @@
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
 								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9">
-						  </div>
+							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Jovian Christianto" class="col-sm-9">
+								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Cetak spanduk 5x10m" rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
 							</div>
-						</div>
+					</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-success">Save</button>
 						</div>
@@ -178,17 +196,17 @@
 					<div class="modal-body">
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9">
-						  </div>
+								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $_GET["nomor"]; ?>">
+							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Jovian Christianto" class="col-sm-9">
+								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Cetak spanduk 5x10m" rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
 							</div>
-						</div>
+					</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-success">Save</button>
 						</div>
@@ -197,6 +215,12 @@
 		</div>
 	</div>
 	<!-- MODAL TIME -->
+	<?php 
+		$query = "SELECT * FROM time";
+		$dataTime = mysqli_query($dbhandle, $query);
+
+		$waktu = $dataTime->fetch_assoc();
+	?>
 	<div class="modal fade" id="modalTime" role="dialog">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
@@ -204,12 +228,16 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Set Time</h4>
 				</div>
-				<form action="/homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
 							<div class="form-horizontal form-group">
-								<input type="text" id="jam" name="jam" placeholder="jam" class="col-md-2 col-md-offset-2">
-								<input type="text" id="menit" name="menit" placeholder="menit" class="col-md-2 col-md-offset-1">
-								<input type="text" id="detik" name="detik" placeholder="detik" class="col-md-2 col-md-offset-1">
+								<?php
+
+								echo '<input type="text" id="jam" name="jam" placeholder="jam" class="col-md-2 col-md-offset-2" value="' . $waktu["jam"] . '">';
+								echo '<input type="text" id="menit" name="menit" placeholder="menit" class="col-md-2 col-md-offset-1" value="' . $waktu["menit"] . '">';
+								echo '<input type="text" id="detik" name="detik" placeholder="detik" class="col-md-2 col-md-offset-1" value="' . $waktu["detik"] . '">';
+
+								?>
 							</div>
 							<div class="form-horizontal form-group">
 								<b class="col-sm-2 col-md-offset-2">Jam</b>
@@ -246,7 +274,7 @@
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
 								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
 							</div>
-						</div>
+					</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-danger">Delete</button>
 						</div>
