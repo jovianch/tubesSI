@@ -108,6 +108,8 @@
 
 
 				<div id="tombol" class="col-md-10 col-md-offset-1">
+					<form action="homePage.php" name="CRUD" action="" method="get">
+						<h3>Edit / Delete no :</h3><input type="text" name="nomor" placeholder="No" class="form-control"><br><br>
 
 						<button id="btnCreate" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreate">
 							<i class="glyphicon glyphicon-plus"></i>
@@ -128,6 +130,7 @@
 							<i class="glyphicon glyphicon-trash"></i>
 							Delete
 						</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -229,11 +232,11 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Delete</h4>
 				</div>
-				<form action="/homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9">
+								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $_GET["nomor"]; ?>">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
