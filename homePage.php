@@ -207,9 +207,9 @@
 				<form action="/homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
 							<div class="form-horizontal form-group">
-								<input type="text" id="jam" name="jam" placeholder="XX" class="col-md-2 col-md-offset-2">
-								<input type="text" id="menit" name="menit" placeholder="XX" class="col-md-2 col-md-offset-1">
-								<input type="text" id="detik" name="detik" placeholder="XX" class="col-md-2 col-md-offset-1">
+								<input type="text" id="jam" name="jam" placeholder="jam" class="col-md-2 col-md-offset-2">
+								<input type="text" id="menit" name="menit" placeholder="menit" class="col-md-2 col-md-offset-1">
+								<input type="text" id="detik" name="detik" placeholder="detik" class="col-md-2 col-md-offset-1">
 							</div>
 							<div class="form-horizontal form-group">
 								<b class="col-sm-2 col-md-offset-2">Jam</b>
@@ -240,11 +240,11 @@
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Jovian Christianto" class="col-sm-9">
+								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Cetak spanduk 5x10m" rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
 							</div>
 						</div>
 						<div class="modal-footer">

@@ -90,6 +90,30 @@ LOCK TABLES `pesanan` WRITE;
 INSERT INTO `pesanan` VALUES (1,'Cetak Spanduk 5 x 5 meter'),(2,'Cetak XBanner 5 buah'),(3,'produksi mug 1000 buah');
 /*!40000 ALTER TABLE `pesanan` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `time`
+--
+
+DROP TABLE IF EXISTS `time`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `time` (
+  `jam` int(11) DEFAULT NULL,
+  `menit` int(11) DEFAULT NULL,
+  `detik` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `time`
+--
+
+LOCK TABLES `time` WRITE;
+/*!40000 ALTER TABLE `time` DISABLE KEYS */;
+INSERT INTO `time` VALUES (12,0,0);
+/*!40000 ALTER TABLE `time` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -100,4 +124,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-10 13:54:14
+-- Dump completed on 2017-04-11 15:42:06
