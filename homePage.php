@@ -8,7 +8,7 @@
 		<title>Aplikasi Pengingat Pengambilan Produk</title>
 	</head>
 	<body>
-	<?phpj
+	<?php
 		//search
 		$keyword = "";
 
@@ -74,16 +74,20 @@
 			//close connection
 			curl_close($ch);
 		}
-		$query = "SELECT customer.no_hp, nama, deskripsi, tanggal_terakhir FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id;";
 
-		//creat
-		$data = mysqli_query($dbhandle, $query);
+
+		//check if the page after set time
+		if(isset($_GET['jam'])) {
+			$query = "UPDATE time SET jam=" . $_GET['jam'] . ", menit=" . $_GET['menit'] . ", detik=" . $_GET['detik'] . ";";
+			mysqli_query($dbhandle, $query);
+		}
 
 
 		$query = "SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%" . $keyword. "%' OR nama LIKE '%" . $keyword . "%' OR deskripsi LIKE '%" . $keyword . "%';";
 
 		$data = mysqli_query($dbhandle, $query);
 
+		$arrayHp = array();
 		//inisialisasi
 		$i = 1;
 
@@ -118,6 +122,7 @@
 					  <?php
 					  	while ($record = $data->fetch_assoc()) :
 					  		$no_hp = $record["hp"];
+					  		array_push($arrayHp,$no_hp);
 							$nama = $record["nama"];
 							$deskripsi = $record["deskripsi"];
 							$tanggal = $record["tanggal"];
@@ -138,13 +143,27 @@
 
 
 				<div id="tombol" class="col-md-10 col-md-offset-1">
+					<form action="homePage.php" name="CRUD" action="" method="get">
+						<h3>Edit / Delete no :</h3>
+						<!--input type="text" id="nama" name="nomor" placeholder="Nama customer..." class="col-sm-9"-->
+						<select name="nomor">
+							<?php 
+								$j = 1;
+								while ($j<$i) :
+									echo "<option value=" . $j . ">" . $j . "</option>";
+									$j++;
+								endwhile; 
+							?>
+						</select>
+
+						<br><br>
 
 						<button id="btnCreate" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreate">
 							<i class="glyphicon glyphicon-plus"></i>
 							Create
 						</button>
 
-						<button id="btnEdit"type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalSMS">
+						<button id="btnEdit"type="submit" class="btn btn-warning" data-toggle="modal" data-target="#modalEdit" name="edit" value="on">
 							<i class="glyphicon glyphicon-pencil"></i>
 							Edit
 						</button>
@@ -154,10 +173,11 @@
 							Time
 						</button>
 
-						<button id="btnDelete" type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDelete">
+						<button id="btnDelete" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#modalDelete" name="delete" value="on">
 							<i class="glyphicon glyphicon-trash"></i>
 							Delete
 						</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -176,16 +196,16 @@
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
 								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9">
-						  </div>
+							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Jovian Christianto" class="col-sm-9">
+								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Cetak spanduk 5x10m" rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
 							</div>
-						</div>
+					</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-success">Save</button>
 						</div>
@@ -205,17 +225,17 @@
 					<div class="modal-body">
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9">
-						  </div>
+								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $_GET["nomor"]; ?>">
+							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Jovian Christianto" class="col-sm-9">
+								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Cetak spanduk 5x10m" rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
 							</div>
-						</div>
+					</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-success">Save</button>
 						</div>
@@ -224,6 +244,12 @@
 		</div>
 	</div>
 	<!-- MODAL TIME -->
+	<?php 
+		$query = "SELECT * FROM time";
+		$dataTime = mysqli_query($dbhandle, $query);
+
+		$waktu = $dataTime->fetch_assoc();
+	?>
 	<div class="modal fade" id="modalTime" role="dialog">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
@@ -231,12 +257,16 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Set Time</h4>
 				</div>
-				<form action="/homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
 							<div class="form-horizontal form-group">
-								<input type="text" id="jam" name="jam" placeholder="XX" class="col-md-2 col-md-offset-2">
-								<input type="text" id="menit" name="menit" placeholder="XX" class="col-md-2 col-md-offset-1">
-								<input type="text" id="detik" name="detik" placeholder="XX" class="col-md-2 col-md-offset-1">
+								<?php
+
+								echo '<input type="text" id="jam" name="jam" placeholder="jam" class="col-md-2 col-md-offset-2" value="' . $waktu["jam"] . '">';
+								echo '<input type="text" id="menit" name="menit" placeholder="menit" class="col-md-2 col-md-offset-1" value="' . $waktu["menit"] . '">';
+								echo '<input type="text" id="detik" name="detik" placeholder="detik" class="col-md-2 col-md-offset-1" value="' . $waktu["detik"] . '">';
+
+								?>
 							</div>
 							<div class="form-horizontal form-group">
 								<b class="col-sm-2 col-md-offset-2">Jam</b>
@@ -259,21 +289,32 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Delete</h4>
 				</div>
-				<form action="/homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
+					<?php
+						$hp = $arrayHp[$_GET['nomor']-1];
+						//echo "test";
+						$query = "SELECT customer.no_hp AS hp, nama, deskripsi FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id AND customer.no_hp='" . $hp . "';";
+
+						$data = mysqli_query($dbhandle, $query);
+
+						$delete = $data->fetch_assoc();
+					?>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9">
+								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9" value="
+								<?php echo $delete["hp"]; ?>" disabled>
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Jovian Christianto" class="col-sm-9">
+								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9" value="
+								<?php echo $delete["nama"]; ?>"  disabled>
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Cetak spanduk 5x10m" rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9" disabled><?php echo $delete["deskripsi"]; ?></textarea>
 							</div>
-						</div>
+					</div>
 						<div class="modal-footer">
 							<button type="submit" class="btn btn-danger">Delete</button>
 						</div>
@@ -307,6 +348,21 @@
 			</div>
 		</div>
 	</div>
-
+	<!-- SCRIPT -->
+	<?php
+		if(isset($_GET['nomor'])) {
+			if(isset($_GET['edit'])) {
+	    		echo '<script type="text/javascript">';
+		    	echo '$(document).ready(function(){';
+		        echo "$('#modalEdit').modal('show');";
+		    	echo "});	</script>";
+			} else {
+				echo '<script type="text/javascript">';
+		    	echo '$(document).ready(function(){';
+		        echo "$('#modalDelete').modal('show');";
+		    	echo "});	</script>";
+			}
+		}
+	?>
 	</body>
 </html>
