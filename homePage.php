@@ -82,6 +82,26 @@
 			mysqli_query($dbhandle, $query);
 		}
 
+		//check if the page after delete
+		if(isset($_GET['delData'])) {
+			$deletedHp = $_GET['delData'];
+			$query = "SELECT id FROM custpesanan WHERE no_hp='" . $deletedHp . "';";
+			$id = mysqli_query($dbhandle, $query);
+			$id = $id->fetch_assoc();
+			$id = $id["id"];
+
+			//execute delete
+    		$query = "DELETE FROM custpesanan WHERE no_hp='" . $deletedHp . "';";
+    		mysqli_query($dbhandle, $query);
+
+    		$query = "DELETE FROM customer WHERE no_hp='" . $deletedHp . "';";
+    		mysqli_query($dbhandle, $query);
+
+    		$query = "DELETE FROM pesanan WHERE id = " . $id . ";";
+    		mysqli_query($dbhandle, $query);
+
+		}
+
 
 		$query = "SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%" . $keyword. "%' OR nama LIKE '%" . $keyword . "%' OR deskripsi LIKE '%" . $keyword . "%';";
 
@@ -150,9 +170,15 @@
 							<?php 
 								$j = 1;
 								while ($j<$i) :
-									echo "<option value=" . $j . ">" . $j . "</option>";
+									if(isset($_GET['nomor'])) {
+										if ($j == $_GET['nomor'])
+											echo "<option value=" . $j . " selected>" . $j . "</option>";
+										else echo "<option value=" . $j . ">" . $j . "</option>";
+									} else {
+										echo "<option value=" . $j . ">" . $j . "</option>";
+									}
 									$j++;
-								endwhile; 
+								endwhile;
 							?>
 						</select>
 
@@ -221,7 +247,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Edit</h4>
 				</div>
-				<form action="/homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
@@ -302,21 +328,24 @@
 					?>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9" value="
+								<input type="text" id="noHP" name="noHPDel" placeholder="08XXXXXXXXXX" class="col-sm-9" value="
 								<?php echo $delete["hp"]; ?>" disabled>
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9" value="
+								<input type="text" id="nama" name="namaDel" placeholder="Nama customer..." class="col-sm-9" value="
 								<?php echo $delete["nama"]; ?>"  disabled>
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9" disabled><?php echo $delete["deskripsi"]; ?></textarea>
+								<textarea type="text" id="pesanan" name="pesananDel" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9" disabled><?php echo $delete["deskripsi"]; ?></textarea>
 							</div>
 					</div>
 						<div class="modal-footer">
-							<button type="submit" class="btn btn-danger">Delete</button>
+							<?php
+								echo '<button type="submit" class="btn btn-danger" name="delData" value="' . $delete["hp"] . '">';
+							?>
+							Delete</button>
 						</div>
 				</form>
 			</div>
