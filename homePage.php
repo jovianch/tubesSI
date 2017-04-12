@@ -32,7 +32,6 @@
 
 		//check if the page after create
 		if(isset($_GET['noHP'])) {
-			if ($_GET['noHP']="" || $_GET['nama']="" || )
 
     		//execute create
     		$query = "INSERT INTO customer VALUES ('" . $_GET['noHP'] . "','" . $_GET['nama'] . "');";
@@ -56,7 +55,7 @@
 			$url        =   'https://rest.nexmo.com/sms/json';
 
 			//url-ify the data for the POST
-			foreach($fields as $key=>$value) {   
+			foreach($fields as $key=>$value) {
 					$fields_string .= $key.'='.$value.'&';
 					}
 			rtrim($fields_string, '&');
@@ -139,6 +138,8 @@
 
 		$data = mysqli_query($dbhandle, $query);
 
+		$data1 = mysqli_query($dbhandle, $query);
+
 		$arrayHp = array();
 		//inisialisasi
 		$i = 1;
@@ -152,7 +153,7 @@
 
 				<div id="pencarian">
 					<form action="homePage.php" method="get" class="col-md-10 col-md-offset-1 input-group">
-			  			<input type="text" name="searchKey" placeholder="Nama" class="form-control">
+			  			<input type="text" name="searchKey" placeholder="Nama / Pesanan" class="form-control">
 							<div class="input-group-btn">
 	      				<button class="btn btn-default" type="submit">
 	        				<i class="glyphicon glyphicon-search"></i>
@@ -199,7 +200,7 @@
 						<h3>Edit / Delete no :</h3>
 						<!--input type="text" id="nama" name="nomor" placeholder="Nama customer..." class="col-sm-9"-->
 						<select name="nomor">
-							<?php 
+							<?php
 								$j = 1;
 								while ($j<$i) :
 									if(isset($_GET['nomor'])) {
@@ -235,6 +236,14 @@
 							<i class="glyphicon glyphicon-trash"></i>
 							Delete
 						</button>
+
+
+						<a href="homePage.php?send=true">
+						<button id="btnSend" type="button" class="btn btn-default">
+							<i class="glyphicon glyphicon-envelope"></i>
+							Send SMS
+						</button>
+						</a>
 					</form>
 				</div>
 			</div>
@@ -249,7 +258,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Create New</h4>
 				</div>
-				<form action="homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal" name="formCreate" onsubmit="return validateFormCreate()">
 					<div class="modal-body">
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
@@ -279,7 +288,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Edit</h4>
 				</div>
-				<form action="homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal" name=formEdit onsubmit="return validateFormEdit()">
 					<div class="modal-body">
 					<?php
 						$hp = $arrayHp[$_GET['nomor']-1];
@@ -292,7 +301,7 @@
 					?>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHPNew" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $edit["hp"]; ?>">
+								<input type="text" id="noHPEdit" name="noHPNew" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $edit["hp"]; ?>">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
@@ -312,8 +321,8 @@
 			</div>
 		</div>
 	</div>
+
 	<!-- MODAL TIME -->
-	
 	<div class="modal fade" id="modalTime" role="dialog">
 		<div class="modal-dialog modal-sm modal-time">
 			<div class="modal-content">
@@ -321,9 +330,9 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Set Time</h4>
 				</div>
-				<form action="homePage.php" method="get" class="form-horizontal">
+				<form action="homePage.php" method="get" class="form-horizontal" name="formTime" onsubmit="return validateFormTime()">
 					<div class="modal-body">
-					<?php 
+					<?php
 						$query = "SELECT * FROM time";
 						$dataTime = mysqli_query($dbhandle, $query);
 
@@ -366,6 +375,7 @@
 
 						$data = mysqli_query($dbhandle, $query);
 
+						$data2 = mysqli_query($dbhandle, $query);
 						$delete = $data->fetch_assoc();
 					?>
 							<div class="form-group">
@@ -432,6 +442,102 @@
 		    	echo "});	</script>";
 			}
 		}
+
+	if(isset($_GET['send'])) {
+		while ($record1 = $data1->fetch_assoc()) :
+			$no_hp = $record1["hp"];
+			$nama = $record1["nama"];
+			$deskripsi = $record1["deskripsi"];
+			$tanggal = $record1["tanggal"];
+					$fields_string  =   "";
+					$fields     =   array(
+															'api_key'       =>  '65d505a1',
+															'api_secret'    =>  'fdda4cf940cda526',
+															'to'            =>  $no_hp,
+															'from'          =>  'Tirta Anugrah',
+															'text'          =>  'Yth. Sdr. ' . $nama . ' produk ' . $deskripsi . ' harap segera diambil. Terima kasih .  -Tirta Anugrah-'
+					);
+					$url        =   'https://rest.nexmo.com/sms/json';
+
+					//url-ify the data for the POST
+					foreach($fields as $key=>$value) {
+										$fields_string .= $key.'='.$value.'&';
+										}
+					rtrim($fields_string, '&');
+
+						//open connection
+					$ch = curl_init();
+
+					//set the url, number of POST vars, POST data
+					curl_setopt($ch,CURLOPT_URL, $url);
+					curl_setopt($ch,CURLOPT_POST, count($fields));
+					curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					//execute post
+					$result = curl_exec($ch);
+					//close connection
+					curl_close($ch);
+
+		$i++;
+		endwhile;
+	}
 	?>
+
+	<script>
+	function validateFormCreate(){
+		var nohp = document.forms["formCreate"]["noHP"].value;
+		var nama = document.forms["formCreate"]["nama"].value;
+		var pesanan = document.forms["formCreate"]["pesanan"].value;
+		if ((nohp == "") || (nama == "") || (pesanan == "")){
+			alert("input may not be left empty");
+			return false;
+		} else if (isExist(nohp)){
+			alert("noHP has been recorded, try another.");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function isExist(no_hp){
+		var retvalue = false;
+		return retvalue;
+	}
+
+	document.getElementById("noHPEdit").addEventListener("change", function() {alert("NoHP can not be changed.")});
+	function validateFormEdit(){
+		var nohp = document.forms["formEdit"]["noHPNew"].value;
+		var nama = document.forms["formEdit"]["namaNew"].value;
+		var pesanan = document.forms["formEdit"]["pesananNew"].value;
+		if ((nohp == "") || (nama == "") || (pesanan == "")){
+			alert("inputs may not be left empty");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function validateFormTime(){
+		var jam = document.forms["formTime"]["jam"].value;
+		var menit = document.forms["formTime"]["menit"].value;
+		if ((jam == "") || (menit == "")){
+			alert("inputs may not be left empty");
+			return false;
+		} else if (jam >= 24 || jam < 0 || menit >= 60 || menit < 0){
+			alert("input must be valid");
+			return false;
+		} else {
+			if (jam >= 21 || jam < 9){
+				alert("input must be in opeing hours");
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	</script>
+
 	</body>
 </html>

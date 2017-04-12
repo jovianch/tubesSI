@@ -42,19 +42,21 @@
 				  </div>
 					</form>
 				</div>
+
+				<script>
+				function validateForm(){
+					var username = document.forms["login"]["username"].value;
+					var password = document.forms["login"]["password"].value;
+					if ((username == "tirtaanugrah") && (password == "1234567890")){
+						return true;
+					} else if (username == "" || password == ""){
+						alert("username or password may not be empty");
+						return false;
+					} else {
+						alert("username or password false");
+						return false;
+					}
+				}
+				</script>			
 	</body>
 </html>
-
-<script>
-function validateForm(){
-	var username = document.forms["login"]["username"].value;
-	var password = document.forms["login"]["password"].value;
-	if ((username == "tirtaanugrah") && (password == "1234567890")){
-		return true;
-	}
-	else{
-		alert("username or password false");
-		return false;
-	}
-}
-</script>
