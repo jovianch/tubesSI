@@ -33,6 +33,7 @@
 		//check if the page after create
 		if(isset($_GET['noHP'])) {
 
+
     		//execute create
     		$query = "INSERT INTO customer VALUES ('" . $_GET['noHP'] . "','" . $_GET['nama'] . "');";
     		mysqli_query($dbhandle, $query);
@@ -79,8 +80,10 @@
 
 		//check if the page after set time
 		if(isset($_GET['jam'])) {
-			$query = "UPDATE time SET jam=" . $_GET['jam'] . ", menit=" . $_GET['menit'] . ", detik=" . $_GET['detik'] . ";";
-			mysqli_query($dbhandle, $query);
+			if (is_int($_GET['jam']) && is_int($_GET['menit'])) {
+				$query = "UPDATE time SET jam=" . $_GET['jam'] . ", menit=" . $_GET['menit'] . ", detik=" . $_GET['detik'] . ";";
+				mysqli_query($dbhandle, $query);
+			}
 		}
 
 		//check if the page after delete
@@ -105,32 +108,35 @@
 
 		//check if the page after edit
 		if(isset($_GET['newData'])) {
-			$editedHp = $_GET['newData'];
-			$query = "SELECT id FROM custpesanan WHERE no_hp='" . $editedHp . "';";
-			$id = mysqli_query($dbhandle, $query);
-			$id = $id->fetch_assoc();
-			$id = $id["id"];
+			if ($_GET['noHPNew']!=$_GET['newData']) {
+				//DO NOT EXECUTE EDIT
+			} else {
+				$editedHp = $_GET['newData'];
+				$query = "SELECT id FROM custpesanan WHERE no_hp='" . $editedHp . "';";
+				$id = mysqli_query($dbhandle, $query);
+				$id = $id->fetch_assoc();
+				$id = $id["id"];
 
-			$query = "SELECT tanggal_terakhir FROM custpesanan WHERE no_hp='" . $editedHp . "';";
-			$date = mysqli_query($dbhandle, $query);
-			$date = $date->fetch_assoc();
-			$date = $date["tanggal_terakhir"];
-			echo $date;
+				$query = "SELECT tanggal_terakhir FROM custpesanan WHERE no_hp='" . $editedHp . "';";
+				$date = mysqli_query($dbhandle, $query);
+				$date = $date->fetch_assoc();
+				$date = $date["tanggal_terakhir"];
+				$date;
 
-			//execute edit
-    		$query = "DELETE FROM custpesanan WHERE no_hp='" . $editedHp . "';";
-    		echo mysqli_query($dbhandle, $query);
+				//execute edit
+	    		$query = "DELETE FROM custpesanan WHERE no_hp='" . $editedHp . "';";
+	    		mysqli_query($dbhandle, $query);
 
-    		$query = "UPDATE customer SET no_hp='" . $_GET['noHPNew'] . "', nama='" . $_GET['namaNew'] . "' WHERE no_hp='" . $editedHp . "';";
-    		//echo $query;
-    		echo mysqli_query($dbhandle, $query);
+	    		$query = "UPDATE customer SET no_hp='" . $_GET['noHPNew'] . "', nama='" . $_GET['namaNew'] . "' WHERE no_hp='" . $editedHp . "';";
+	    		//echo $query;
+	    		mysqli_query($dbhandle, $query);
 
-    		$query = "UPDATE pesanan SET deskripsi='" . $_GET['pesananNew'] . "' WHERE id = " . $id . ";";
-    		echo mysqli_query($dbhandle, $query);
+	    		$query = "UPDATE pesanan SET deskripsi='" . $_GET['pesananNew'] . "' WHERE id = " . $id . ";";
+	    		mysqli_query($dbhandle, $query);
 
-    		$query = "INSERT INTO custpesanan VALUES ('" . $_GET['noHPNew'] . "', " . $id . ", (SELECT DATE_ADD(CURDATE(), INTERVAL 2 WEEK));";
-    		echo mysqli_query($dbhandle, $query);
-
+	    		$query = "INSERT INTO custpesanan VALUES ('" . $_GET['noHPNew'] . "', " . $id . ", (SELECT DATE_ADD(CURDATE(), INTERVAL 2 WEEK)));";
+	    		mysqli_query($dbhandle, $query);
+	    	}
 		}
 
 
@@ -500,14 +506,26 @@
 			return true;
 		}
 	}
+	
+	<?php
+	// echo "function isExist(no_hp){";
+	// 	echo "var retvalue = false;";
+	// 		$query7 = "SELECT no_hp FROM customer;";
+	// 		$data7 = mysqli_query($dbhandle, $query7);
+	// 		while ($record7 = $data7->fetch_assoc()) :
+	// 			echo "if (no_hp==" . $record7["no_hp"] . ")";
+	// 			echo "retvalue = true";
+	// 			echo 'console.log("test")';
+	// 		endwhile;
+	// 	echo "return retvalue;";
+	// 	echo "}";
+	?>
 
-	function isExist(no_hp){
-		var retvalue = false;
-		return retvalue;
-	}
+	
 
 	document.getElementById("noHPEdit").addEventListener("change", function() {alert("NoHP can not be changed.")});
 	function validateFormEdit(){
+
 		var nohp = document.forms["formEdit"]["noHPNew"].value;
 		var nama = document.forms["formEdit"]["namaNew"].value;
 		var pesanan = document.forms["formEdit"]["pesananNew"].value;
