@@ -32,6 +32,8 @@
 
 		//check if the page after create
 		if(isset($_GET['noHP'])) {
+			if ($_GET['noHP']="" || $_GET['nama']="" || )
+
     		//execute create
     		$query = "INSERT INTO customer VALUES ('" . $_GET['noHP'] . "','" . $_GET['nama'] . "');";
     		mysqli_query($dbhandle, $query);
@@ -127,7 +129,7 @@
     		$query = "UPDATE pesanan SET deskripsi='" . $_GET['pesananNew'] . "' WHERE id = " . $id . ";";
     		echo mysqli_query($dbhandle, $query);
 
-    		$query = "INSERT INTO custpesanan VALUES ('" . $_GET['noHPNew'] . "', " . $id . ", '" . $date . "');";
+    		$query = "INSERT INTO custpesanan VALUES ('" . $_GET['noHPNew'] . "', " . $id . ", (SELECT DATE_ADD(CURDATE(), INTERVAL 2 WEEK));";
     		echo mysqli_query($dbhandle, $query);
 
 		}
