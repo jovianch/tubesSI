@@ -290,13 +290,11 @@
 					?>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHPNew" placeholder="08XXXXXXXXXX" class="col-sm-9" value="
-								<?php echo $edit["hp"]; ?>">
+								<input type="text" id="noHP" name="noHPNew" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $edit["hp"]; ?>">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="namaNew" placeholder="Nama customer..." class="col-sm-9" value="
-								<?php echo $edit["nama"]; ?>">
+								<input type="text" id="nama" name="namaNew" placeholder="Nama customer..." class="col-sm-9" value="<?php echo $edit["nama"]; ?>">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
@@ -313,14 +311,9 @@
 		</div>
 	</div>
 	<!-- MODAL TIME -->
-	<?php 
-		$query = "SELECT * FROM time";
-		$dataTime = mysqli_query($dbhandle, $query);
-
-		$waktu = $dataTime->fetch_assoc();
-	?>
+	
 	<div class="modal fade" id="modalTime" role="dialog">
-		<div class="modal-dialog modal-sm">
+		<div class="modal-dialog modal-sm modal-time">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -328,19 +321,23 @@
 				</div>
 				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
+					<?php 
+						$query = "SELECT * FROM time";
+						$dataTime = mysqli_query($dbhandle, $query);
+
+						$waktu = $dataTime->fetch_assoc();
+					?>
 							<div class="form-horizontal form-group">
 								<?php
 
 								echo '<input type="text" id="jam" name="jam" placeholder="jam" class="col-md-2 col-md-offset-2" value="' . $waktu["jam"] . '">';
 								echo '<input type="text" id="menit" name="menit" placeholder="menit" class="col-md-2 col-md-offset-1" value="' . $waktu["menit"] . '">';
-								echo '<input type="text" id="detik" name="detik" placeholder="detik" class="col-md-2 col-md-offset-1" value="' . $waktu["detik"] . '">';
 
 								?>
 							</div>
 							<div class="form-horizontal form-group">
 								<b class="col-sm-2 col-md-offset-2">Jam</b>
 								<b class="col-sm-2 col-md-offset-1">Menit</b>
-								<b class="col-sm-2 col-md-offset-1">Detik</b>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -371,13 +368,11 @@
 					?>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHPDel" placeholder="08XXXXXXXXXX" class="col-sm-9" value="
-								<?php echo $delete["hp"]; ?>" disabled>
+								<input type="text" id="noHP" name="noHPDel" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $delete["hp"]; ?>" disabled>
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="namaDel" placeholder="Nama customer..." class="col-sm-9" value="
-								<?php echo $delete["nama"]; ?>"  disabled>
+								<input type="text" id="nama" name="namaDel" placeholder="Nama customer..." class="col-sm-9" value="<?php echo $delete["nama"]; ?>"  disabled>
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
