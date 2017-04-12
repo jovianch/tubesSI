@@ -102,6 +102,36 @@
 
 		}
 
+		//check if the page after edit
+		if(isset($_GET['newData'])) {
+			$editedHp = $_GET['newData'];
+			$query = "SELECT id FROM custpesanan WHERE no_hp='" . $editedHp . "';";
+			$id = mysqli_query($dbhandle, $query);
+			$id = $id->fetch_assoc();
+			$id = $id["id"];
+
+			$query = "SELECT tanggal_terakhir FROM custpesanan WHERE no_hp='" . $editedHp . "';";
+			$date = mysqli_query($dbhandle, $query);
+			$date = $date->fetch_assoc();
+			$date = $date["tanggal_terakhir"];
+			echo $date;
+
+			//execute edit
+    		$query = "DELETE FROM custpesanan WHERE no_hp='" . $editedHp . "';";
+    		echo mysqli_query($dbhandle, $query);
+
+    		$query = "UPDATE customer SET no_hp='" . $_GET['noHPNew'] . "', nama='" . $_GET['namaNew'] . "' WHERE no_hp='" . $editedHp . "';";
+    		//echo $query;
+    		echo mysqli_query($dbhandle, $query);
+
+    		$query = "UPDATE pesanan SET deskripsi='" . $_GET['pesananNew'] . "' WHERE id = " . $id . ";";
+    		echo mysqli_query($dbhandle, $query);
+
+    		$query = "INSERT INTO custpesanan VALUES ('" . $_GET['noHPNew'] . "', " . $id . ", '" . $date . "');";
+    		echo mysqli_query($dbhandle, $query);
+
+		}
+
 
 		$query = "SELECT * FROM (SELECT customer.no_hp AS hp, nama, deskripsi, tanggal_terakhir AS tanggal FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id) T WHERE hp LIKE '%" . $keyword. "%' OR nama LIKE '%" . $keyword . "%' OR deskripsi LIKE '%" . $keyword . "%';";
 
@@ -249,21 +279,34 @@
 				</div>
 				<form action="homePage.php" method="get" class="form-horizontal">
 					<div class="modal-body">
+					<?php
+						$hp = $arrayHp[$_GET['nomor']-1];
+						//echo "test";
+						$query = "SELECT customer.no_hp AS hp, nama, deskripsi FROM customer, pesanan, custpesanan WHERE  customer.no_hp = custpesanan.no_hp AND pesanan.id = custpesanan.id AND customer.no_hp='" . $hp . "';";
+
+						$data = mysqli_query($dbhandle, $query);
+
+						$edit = $data->fetch_assoc();
+					?>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">No HP</label>
-								<input type="text" id="noHP" name="noHP" placeholder="08XXXXXXXXXX" class="col-sm-9" value="<?php echo $_GET["nomor"]; ?>">
+								<input type="text" id="noHP" name="noHPNew" placeholder="08XXXXXXXXXX" class="col-sm-9" value="
+								<?php echo $edit["hp"]; ?>">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Nama</label>
-								<input type="text" id="nama" name="nama" placeholder="Nama customer..." class="col-sm-9">
+								<input type="text" id="nama" name="namaNew" placeholder="Nama customer..." class="col-sm-9" value="
+								<?php echo $edit["nama"]; ?>">
 							</div>
 							<div class="form-group">
 								<label for="noHP" class="col-sm-2 control-label">Pesanan</label>
-								<textarea type="text" id="pesanan" name="pesanan" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"></textarea>
+								<textarea type="text" id="pesanan" name="pesananNew" placeholder="Deskripsi pesanan..." rows="5" class="col-sm-9"><?php echo $edit["deskripsi"]; ?></textarea>
 							</div>
 					</div>
 						<div class="modal-footer">
-							<button type="submit" class="btn btn-success">Save</button>
+							<?php
+								echo '<button type="submit" class="btn btn-success" name="newData" value="' . $edit["hp"] . '">';
+							?>Save</button>
 						</div>
 				</form>
 			</div>
